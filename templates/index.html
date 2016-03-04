@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>VoterDB</h1>
+
+<p>VoterDB is an application that provides mapping from voter-id to the polling booth it belongs.</p>
+
+<p>Select one of the states below to start using:</p>
+
+<div>
+{% for state in states %}
+	<div><strong><a href="/{{state.code}}">{{state.name}}</a></strong></div>
+{% endfor %}
+</div>
+
+{% endblock %}
