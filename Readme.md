@@ -16,6 +16,10 @@ The program expects a SQLite database with name `voter.db` in the current direct
 
 	$ VOTER_LOOKUP_DATABSE=a.db python webapp.py
 
+Running in production:
+
+	$ gunicorn webapp:application -b 127.0.0.1:8080
+
 API
 ---
 
