@@ -1,11 +1,10 @@
 from __future__ import print_function
 import web
 import json
-from webpy_jinja2 import render_template
 import os
 
 urls = (
-    "/", "index",
+    "/", "redirect /static/",
     "/search", "search"
 )
 app = web.application(urls, globals())
@@ -21,10 +20,6 @@ def get_voters(voterid, state=None):
     if state:
         wheres['state'] = state.upper()
     return db.where("voterid", **wheres).list()
-
-class index:
-    def GET(self):
-        return render_template("index.html")
 
 class search:
     def GET(self):
