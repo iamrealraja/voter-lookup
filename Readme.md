@@ -20,6 +20,21 @@ Running in production:
 
 	$ gunicorn webapp:application -b 127.0.0.1:8080
 
+Running using Docker
+--------------------
+
+Build the docker image:
+
+	$ docker build anandology/voter-lookup:devel .
+
+Run the application:
+
+	$ docker run -p 8080:80 -v /opt/voter-lookup/voter.db:/voter.db anandology/voter-lookup:devel
+
+This assumes the voterids database is available at /opt/voter-lookup/voter.db.
+
+Use option `--restart=always` if you want docker to auto-restart your application and auto start it on boot.
+
 API
 ---
 
