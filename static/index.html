@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Voter Lookup</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Voter Lookup</h1>
+
+      <p>Voter Lookup service finds the state, assembly constituency and pooling booth given a voterid.</p>
+
+      <div class="well">
+        <p>Enter a voter ID in the textbox below to find where it belongs.</p>
+        <br/>
+        <form class="form-inline">
+          <div class="form-group">
+            <input type="text" class="form-control" name="voterid" id="voterid" placeholder="Enter Voter ID">
+          </div>
+          <button type="submit" id="btn-lookup" class="btn btn-default">Look up</button>
+        </form>
+        <div id="response" style="display: none; margin-top: 20px;">
+          <h3>Response</h3>
+          <pre style="background: white;"></pre>
+          <p id="url"><a href="#"></a></p>
+        </div>
+      </div>
+      <h2>API</h2>
+      See <a href="https://github.com/anandology/voter-lookup">Readme</a> for API details.    
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        $("#btn-lookup").click(function(event) {
+          var voterid = $("#voterid").val();
+          event.preventDefault();
+
+          if (voterid == "") {
+            $("#response").hide();
+            return;
+          }
+          var url = document.origin + "/search?voterid=" + voterid;
+
+          $.getJSON("/search", {"voterid": voterid}, function(data) {
+            $("#response")
+              .show()
+              .find("pre")
+              .html(JSON.stringify(data, null, '    '));
+
+            $("#url a").attr("href", url).html(url);
+          });
+        });
+      });
+    </script>
+
+  </body>
+</html>
