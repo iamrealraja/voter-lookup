@@ -1,13 +1,9 @@
 
-create table state (
-	code char(2) primary key,
-	name text,
-	last_updated datetime default (current_timestamp at time zone 'utc')
-);
-
-create table voterid (
-	state char(2) references state,
+create table voter (
+	state char(2)
 	ac smallint,
 	pb smallint,
 	voterid text	
 );
+
+create index voter_idx on voter(voterid);

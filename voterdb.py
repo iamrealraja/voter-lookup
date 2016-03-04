@@ -1,67 +1,37 @@
+from __future__ import print_function
 import web
 import json
-import logging
 from webpy_jinja2 import render_template
 import os
 
 urls = (
     "/", "index",
-    "/([A-Z][A-Z])", "state",
-    "/([A-Z][A-Z])/(.*)", "voterid"
+    "/search", "search"
 )
 app = web.application(urls, globals())
 application = app.wsgifunc()
 
-def setup_logger():
-    FORMAT = "%(asctime)-15s %(levelname)s %(message)s"
-    logging.basicConfig(level=logging.INFO, format=FORMAT)    
-    return logging.getLogger("voterdb")
-
-logger = setup_logger()
-
-dbfile = os.getenv("VOTERDB_DATABASE", "voterids.db")
-logger.info("using the sqlite database %r", dbfile)
+dbfile = os.getenv("VOTER_LOOKUP_DATABASE", "voter.db")
+print("using the sqlite database:", dbfile)
 
 db = web.database(dbn="sqlite", db=dbfile)
 
-def init_app(dbfile):
-    global db
-    db = web.database(dbn="sqlite", db=dbfile)
-
-def get_states():
-    return db.select("state").list()
-
-def get_state(code):    
-    result = db.where("state", code=code).list()
-    return result and result[0] or None
-
-def get_voter(state_code, voterid):
-    result = db.where("voterid", state=state_code, voterid=voterid).list()
-    return result and result[0] or None
+def get_voters(voterid, state=None):
+    wheres = dict(voterid=voterid)
+    if state:
+        wheres['state'] = state.upper()
+    return db.where("voterid", **wheres).list()
 
 class index:
     def GET(self):
-        states = get_states()
-        return render_template("index.html", states=states)
+        return render_template("index.html")
 
-class state:
-    def GET(self, state_code):
-        state = get_state(state_code.upper())
-        if not state:
-            raise web.notfound()
-
-        i = web.input(voterid=None)
-        voter = i.voterid and get_voter(state_code, i.voterid)
-        return render_template("state.html", state=state, voter=voter, voterid=i.voterid)
-
-class voterid:
-    def GET(self, state_code, voterid):
-        voter = get_voter(state_code, voterid)
-        if not voter:
-            web.ctx.status = "404 Not Found"
-
+class search:
+    def GET(self):
+        i = web.input(voterid=None, state=None)
+        voter = get_voters(i.voterid, state=i.state)
         web.header("Content-Type", "application/json")
-        return json.dumps(voter)
+        return json.dumps(voter, indent=True)
 
 def main():
     app.run()
