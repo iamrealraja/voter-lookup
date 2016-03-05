@@ -38,7 +38,7 @@
         </div>
       </div>
       <h2>API</h2>
-      See <a href="https://github.com/anandology/voter-lookup">Readme</a> for API details.    
+      See <a href="https://github.com/anandology/voter-lookup">Readme</a> for API details.
     </div>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
@@ -52,7 +52,7 @@
             $("#response").hide();
             return;
           }
-          var url = document.origin + "/search?voterid=" + voterid;
+          var url = window.location.origin + "/search?voterid=" + voterid;
 
           $.getJSON("/search", {"voterid": voterid}, function(data) {
             $("#response")
