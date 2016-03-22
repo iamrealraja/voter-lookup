@@ -16,7 +16,8 @@ print("using the sqlite database:", dbfile)
 db = web.database(dbn="sqlite", db=dbfile)
 
 def get_voters(voterid, state=None):
-    wheres = dict(voterid=voterid)
+    voterid1 = voterid.strip()
+    wheres = dict(voterid=voterid1)
     if state:
         wheres['state'] = state.upper()
     return db.where("voterid", **wheres).list()
